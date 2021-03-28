@@ -81,3 +81,16 @@ exports.signupAsDonor = (req, res) => {
         });
     })
 };
+
+exports.getAllDonors = (req, res) => {
+    Category.find().sort({"firstName" : 1}).exec(
+        (err, donors) => {
+            if(err) {
+                return res.status(400).json({
+                    error : "No donors Found!"
+                });
+            }
+            res.json(donors);
+        }
+    )
+}

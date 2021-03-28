@@ -30,7 +30,7 @@ exports.getCategory = (req, res) => {
 }
 
 exports.getAllCategories = (req, res) => {
-    Category.find().exec(
+    Category.find().sort({"name" : 1}).exec(
         (err, items) => {
             if(err) {
                 return res.status(400).json({
