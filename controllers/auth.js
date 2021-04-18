@@ -28,7 +28,8 @@ exports.signup = (req, res) => {
             lastName : user.lastName,
             email : user.email,
             phone : user.phone,
-            id : user._id
+            id : user._id,
+            isDonor : user.isDonor
         });
     })
 };
@@ -60,8 +61,8 @@ exports.signin = (req, res) => {
         // put token ins user's cookie
         res.cookie("token", token, {expire : new Date() + 9999});
         // Response to the Front-end
-        const { _id, firstName, lastName, email, phone, role} = user;
-        return res.json( {token, user : { _id, firstName, lastName, email, phone, role}});
+        const { _id, firstName, lastName, email, phone, role, isDonor} = user;
+        return res.json( {token, user : { _id, firstName, lastName, email, phone, role, isDonor}});
         
     });
 
@@ -86,7 +87,7 @@ exports.isSignedIn =  expressJwt({
 // Custom Middleware
 exports.isAuthenticated = (req, res, next) => {
 
-    // console.log(req.profile, req.auth);
+    console.log(req.profile, req.auth);
     let checker = req.profile && req.auth && req.profile._id == req.auth._id;
 
     if(!checker) {

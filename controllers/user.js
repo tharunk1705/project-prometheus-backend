@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const Donor = require('../models/donor');
 
 exports.getUserById = (req, res, next, id) => {
     User.findById(id).exec((err, user) => {
@@ -51,7 +50,14 @@ exports.signupAsDonor = (req, res) => {
 
     User.findByIdAndUpdate(
         {_id : req.profile._id},
-        {$set : { isDonor : true}},
+        {$set : {   isDonor : true , 
+                    isAvailable : req.body.isAvailable, 
+                    bloodType : req.body.bloodType, 
+                    location : req.body.location,
+                    lastDonation : req.body.lastDonation,
+                    remarks :  req.body.remarks
+                }
+        },
         {new : true, useFindAndModify : false},
         (err, user) => {
             if(err) {
@@ -67,30 +73,41 @@ exports.signupAsDonor = (req, res) => {
         }
 
     );
-    const donor = new Donor(req.body);
-    // donor.userId = id;
-    donor.save( (err, donor) => {
-        if(err) {
-            console.log(err);
-            return res.status(400).json( {
-                err : "Not able to save donor in the DB"
-            });
-        }
-        res.json({
-            id : donor._id
-        });
-    })
 };
 
 exports.getAllDonors = (req, res) => {
-    Category.find().sort({"firstName" : 1}).exec(
+    User.find({isDonor :  true}).exec(
         (err, donors) => {
             if(err) {
                 return res.status(400).json({
                     error : "No donors Found!"
                 });
             }
+            
             res.json(donors);
         }
     )
+}
+
+exports.searchDonor = (req, res) => {
+    User.find({isDonor : true, isAvailable : true, bloodType : req.body.bloodType, location : {$regex : new RegExp(`^${req.body.location}`, `i`)}}, function(err, result) {
+        if(err){
+            console.log(err);
+        }else {
+            
+            let donors = result.map((donor)=>{
+                return {
+                    'firstName' : donor.firstName,
+                    'lastName' : donor.lastName,
+                    'phone' : donor.phone,
+                    'email' : donor.email,
+                    'isAvailable' : donor.isAvailable,
+                    'bloodType' : donor.bloodType,
+                    'location' : donor.location
+                };
+            })
+
+            res.json(donors);
+        }
+    });
 }

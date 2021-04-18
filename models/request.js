@@ -3,21 +3,13 @@ const {Schema} = mongoose;
 const {ObjectId}  = Schema;
 
 const DonorRequestSchema = new Schema({
-    donor : {
-        type : ObjectId,
-        ref : "Donor"
+    requestedDonor : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User'
     },
-    firstName : {
-        type : ObjectId,
-        ref : "User"
-    },
-    lasttName : {
-        type : ObjectId,
-        ref : "User"
-    },
-    isRequested : {
+    isAccepted : {
         type : Boolean,
-        required : true
+        default : false
     }
 },{
     timestamps : true
@@ -28,7 +20,10 @@ const DonorRequest = mongoose.model("DonorRequest", DonorRequestSchema);
 const RequestSchema = new Schema({
     donors : [DonorRequestSchema],
     request_id : {},
-    isAccepted : {type : Boolean},
+    isFulfilled : {
+        type : Boolean,
+        default : false
+    },
     location : String
 }, {
     timestamps : true

@@ -45,9 +45,30 @@ const userSchema = new Schema({
         type : Boolean,
         default : false
     },
-    activities : {
+    isAvailable : {
+        type : Boolean,
+        default :  false
+    },
+    requests : {
         type : Array,
         default : []
+    },
+    bloodType : {
+        type : String,
+    },
+    location : {
+        type : String
+    },
+    lastDonation : {
+        type : Date
+    },
+    donations : {
+        type : Array,
+        default : []
+    },
+    remarks : {
+        type : String,
+        maxlength : 200
     }
 },{
     timestamps : true
