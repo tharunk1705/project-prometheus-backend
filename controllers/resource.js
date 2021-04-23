@@ -25,3 +25,17 @@ exports.getAllResources = (req, res) => {
         }
     );
 }
+
+exports.getMyResources = (req, res) => {
+    Resource.find({providerUserId : req.profile._id}).exec(
+        (err, resources) => {
+            if(err) {
+                return res.status(400).json({
+                    error : "No resource Found!"
+                });
+            }
+            
+            res.json(resources);
+        }
+    );
+}
